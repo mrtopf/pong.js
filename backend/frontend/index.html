@@ -1,0 +1,62 @@
+<!doctype html>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+<script>
+
+var logpanel, conn; 
+
+function scrollToBottom() {
+    window.scrollBy(0, document.body.scrollHeight - document.body.scrollTop);
+};
+function log(data){
+  logpanel.append("<p>"+data+"</p>");
+  scrollToBottom();
+};
+
+$(document).ready(function() {
+  console.log("huhu");
+  logpanel = $("#log");
+  console.log(logpanel);
+  if (window["WebSocket"]) {
+    conn = new WebSocket("ws://"+document.location.host+"/");
+
+    log("ok");
+    conn.onmessage = function(evt) {
+      log("got data"+ evt.data);
+    };
+
+    conn.onclose = function() {
+      log("** you have been disconnected");
+    };
+
+    conn.onopen = function(){
+      log("** you have been connected");
+    }
+  }
+  
+  $("#form").submit(function(){
+    var t = $("#t").val()
+    conn.send(t);
+    $("#t").val("");
+    return false;
+  })
+
+})
+
+
+
+
+</script>
+
+<body>
+
+<h1>Hello!</h1>
+<div id="log">
+</div>
+
+<form id="form">
+  <input id="t"/>
+  <input type="submit" />
+</form>
+</body>
