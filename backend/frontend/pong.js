@@ -11,8 +11,9 @@ var parts = {
 }
 
 
-function Paddle(ctx,x,y,use_mouse) {
+function Paddle(ctx,x,y,use_mouse,controller) {
 
+    var controller = controller;
     var use_mouse = use_mouse || false;
     var WIDTH = 20;  // paddle width
     var HEIGHT = 80; // paddle height
@@ -27,7 +28,7 @@ function Paddle(ctx,x,y,use_mouse) {
 
     function onMouseMove(e) {
     	y = e.pageY;
-    	//conn.send(y);
+    	controller.send_paddle(y)
     }
 
     function draw() {
@@ -171,16 +172,21 @@ function Pong() {
     
     function set_slave () {
         type = "slave";
-        paddle1 = Paddle(ctx, 20,20);
-        paddle2 = Paddle(ctx, canvas_width-40,80, true);
+        paddle1 = Paddle(ctx, 20,20, false, controller);
+        paddle2 = Paddle(ctx, canvas_width-40,80, true, controller);
         ball = Ball(ctx, 100,120);
     }
 
     function set_master () {
         type = "master";
-        paddle1 = Paddle(ctx, 20,20, true);
-        paddle2 = Paddle(ctx, canvas_width-40,80);
+        paddle1 = Paddle(ctx, 20,20, true, controller);
+        paddle2 = Paddle(ctx, canvas_width-40,80, false, controller);
         ball = Ball(ctx, 100,120);
+    }
+    
+    // set the paddle of the slave
+    function set_paddle(y) {
+        paddle2.set_status(y);
     }
 
     return {
@@ -189,7 +195,8 @@ function Pong() {
         draw: draw,
         set_status: set_status,
         set_slave: set_slave,
-        set_master: set_master
+        set_master: set_master,
+        set_paddle: set_paddle
     }
 }
 

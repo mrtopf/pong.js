@@ -83,10 +83,17 @@ var cmds = {
         send(you, "start");
     },
     
+    // status updates from master to slave
     s: function(connection, evt) {
         var me = connection.id;
         var you = pairs[me];
         send(you, "s", evt);
-        
+    },
+    
+    // paddle updates from slave to master
+    p: function(connection, evt) {
+        var me = connection.id;
+        var you = pairs[me];
+        send(you, "p", evt);        
     }
 }

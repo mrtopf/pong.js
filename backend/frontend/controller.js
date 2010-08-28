@@ -45,6 +45,8 @@ function GameController(renderer) {
             }
             renderer.start();
         },
+        
+        // status update from master to slave
         s: function(conn, payload) {
             renderer.set_status(
                     payload.s[0],
@@ -52,7 +54,14 @@ function GameController(renderer) {
                     payload.s[2],
                     type);
             renderer.draw();
+        },
+        
+        // paddle update from slave to master
+        p: function(conn, payload) {
+            renderer.set_paddle(payload.y);
         }
+        
+        
     }
 
     function init() {
@@ -97,9 +106,16 @@ function GameController(renderer) {
     function send_status(py,bx,by) {
         send("s",{s: [py,bx,by] })
     }
+    
+    // send only the paddle information. used by the slave
+    function send_paddle(y) {
+        send("p", {y:y})
+    }
+    
     return {
         init: init,
-        send_status : send_status
+        send_status : send_status,
+        send_paddle : send_paddle
     }
     
 }
