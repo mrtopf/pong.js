@@ -1,20 +1,76 @@
+Array.prototype.removeid = function(id) {
+    for (var i=0; i<this.length; i++) {
+        if (this[i]===id) {
+            this.splice(i,1);
+        }
+    }
+}
+
+
 var Connect = require('connect');
 var ws = require("websocket-server");
 
-
-
 var server = Connect.createServer(
-  Connect.logger(),
+  //Connect.logger(),
   Connect.staticProvider(__dirname + '/frontend')
 );
 
 
 var ws_server = ws.createServer({server: server});
 ws_server.addListener("connection", function(connection){
-    console.log("connected");
+    console.log("connected with client "+connection.id);
     connection.addListener("message", function(msg){
-        ws_server.broadcast(msg);
+        var e = JSON.parse(msg);
+        console.log(e.c);
+        cmds[e.c](connection, e);
   });
 });
 
+ws_server.addListener("close", function(connection){
+    console.log("connection closed for client "+connection.id);
+    waiting.removeid(connection.id)
+    // TODO: delete from pairs and tell opponent
+    
+});
+
+
 ws_server.listen(8000);
+
+function get_opponent(id) {
+    
+}
+
+
+function send(client_id, cmd, payload) {
+    var payload = payload || {};
+    
+    var pl = {
+        'c' : cmd,
+    }
+    
+    var payload = payload || {};
+    for (var a in payload) {
+        pl[a] = payload[a];
+    }
+    console.log("sending "+JSON.stringify(pl))
+    ws_server.send(client_id, JSON.stringify(pl));
+    
+}
+
+///////////////////////////////////////////////////////////
+
+var pairs = {},     // 
+    waiting = [];   // players waiting for a game
+
+var cmds = {
+    init: function(connection, evt) {
+        if (waiting.length===0) {
+            // new master
+            waiting.push(connection.id);
+            send(connection.id, "ack", {'type' : 'master'})
+        } else {
+            waiting.removeid(connection.id); // remove from wait queue
+            send(connection.id, "ack", {'type' : 'slave'})            
+        }
+    }
+}

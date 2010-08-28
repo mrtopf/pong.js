@@ -27,7 +27,7 @@ function Paddle(ctx,x,y,use_mouse) {
 
     function onMouseMove(e) {
     	y = e.pageY;
-    	conn.send(y);
+    	//conn.send(y);
     }
 
     function draw() {
@@ -88,21 +88,23 @@ function Ball(ctx, x, y) {
 
 function Pong() {
 
-    if (window["WebSocket"]) {
-      conn = new WebSocket("ws://"+document.location.host+"/");
-
-      conn.onmessage = function(evt) {
-          paddle2.set_y(evt.data);
-      };
-
-      conn.onclose = function() {
-        console.log("** you have been disconnected");
-      };
-
-      conn.onopen = function(){
-        console.log("** you have been connected");
-      }
-    }
+    // if (window["WebSocket"]) {
+    //   conn = new WebSocket("ws://"+document.location.host+"/");
+    // 
+    //   conn.onmessage = function(evt) {
+    //       paddle2.set_y(evt.data);
+    //   };
+    // 
+    //   conn.onclose = function() {
+    //     console.log("** you have been disconnected");
+    //   };
+    // 
+    //   conn.onopen = function(){
+    //     console.log("** you have been connected");
+    //   }
+    // }
+    
+    var g = GameController();
 
 
     var canvas_width,
