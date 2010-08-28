@@ -9,15 +9,23 @@
 <script type="text/javascript" src="pong.js"></script>
 
 
-<div id="stage">
-  <div id="all">
+<div id="main">
+  <div id="content">
+    <h1>Pong!</h1>
     <div id="startbutton_container">
         <a href="#" id="startbutton">Start Game!</a>
     </div>
-
-    <div id="message">
+    <div id="headline">
+      <div id="leftcounter" class="counter">
+        0
+      </div>
+      <div id="message">
+        <p>Waiting for Godot!</p>
+      </div>
+      <div id="rightcounter" class="counter">
+        0
+      </div>
     </div>
-    <h1>Pong!</h1>
     <canvas id="canvas" width="800" height="400"></canvas>
   </div>  
 </div>

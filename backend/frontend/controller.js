@@ -16,7 +16,10 @@ function GameController(renderer) {
         paddle1,
         paddle2,
         conn;
-        
+    
+    var player1 = 0;
+    var player2 = 0;
+    
     var CMDS = {
         
         // get information if we are master or slave
