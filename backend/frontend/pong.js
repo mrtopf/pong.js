@@ -87,25 +87,8 @@ function Ball(ctx, x, y) {
 
 
 function Pong() {
-
-    // if (window["WebSocket"]) {
-    //   conn = new WebSocket("ws://"+document.location.host+"/");
-    // 
-    //   conn.onmessage = function(evt) {
-    //       paddle2.set_y(evt.data);
-    //   };
-    // 
-    //   conn.onclose = function() {
-    //     console.log("** you have been disconnected");
-    //   };
-    // 
-    //   conn.onopen = function(){
-    //     console.log("** you have been connected");
-    //   }
-    // }
     
-    var g = GameController();
-
+    var g = GameController(this);
 
     var canvas_width,
 	    canvas_height,
@@ -131,23 +114,37 @@ function Pong() {
     	ball.move();
     	draw();
     }
+    
+    // start the actual game
+    function start() {
+        ctx = $('#canvas')[0].getContext("2d");
+        canvas_width = $("#canvas").width();
+        canvas_height = $("#canvas").height();
 
+        paddle1 = Paddle(ctx, 20,20, true);
+        paddle2 = Paddle(ctx, canvas_width-40,80);
+        ball = Ball(ctx, 100,120);
 
-    ctx = $('#canvas')[0].getContext("2d");
-    canvas_width = $("#canvas").width();
-    canvas_height = $("#canvas").height();
+        // create render loop
+        intervalId = setInterval(main, 10);
+        return intervalId;
+        
+    }
+    
+    function init() {
+    }
 
-    paddle1 = Paddle(ctx, 20,20, true);
-    paddle2 = Paddle(ctx, canvas_width-40,80);
-    ball = Ball(ctx, 100,120);
-
-    // create render loop
-    intervalId = setInterval(main, 10);
-    return intervalId;
-
-
+    return {
+        init: init,
+        start: start
+    }
     
 }
 
-$(document).ready(Pong);
+$(document).ready(function() {
+    p = Pong();
+    g = GameController(p);
+    p.init()
+    g.init()
+});
 

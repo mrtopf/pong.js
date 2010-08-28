@@ -9,8 +9,8 @@ function log(s) {
 /*
 The main game controller implementing the communication aspect
 */
-function GameController() {
-    
+function GameController(renderer) {
+    log(renderer);
     var type,
         ball,
         paddle1,
@@ -19,20 +19,22 @@ function GameController() {
         
     var CMDS = {
         ack: function(conn, payload) {
-            log(payload);
             type = payload.type;
-            log(type);
+        },
+        
+        initialized: function(conn, payload) {
+            renderer.start();
         }
     }
 
-    // initialize the websocket stuff
-    conn = new WebSocket("ws://"+document.location.host+"/");
+    function init() {
+        // initialize the websocket stuff
+        conn = new WebSocket("ws://"+document.location.host+"/");
 
-    conn.onmessage = handle_message;
-    conn.onclose = handle_close;
-    conn.onopen = handle_open;
-    
-    log(conn);
+        conn.onmessage = handle_message;
+        conn.onclose = handle_close;
+        conn.onopen = handle_open;
+    }
     
     function send(cmd, payload) {
         var payload = payload || {};
@@ -65,7 +67,7 @@ function GameController() {
     }
         
     return {
-        
+        init: init
     }
     
 }

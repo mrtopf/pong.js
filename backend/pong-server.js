@@ -36,11 +36,6 @@ ws_server.addListener("close", function(connection){
 
 ws_server.listen(8000);
 
-function get_opponent(id) {
-    
-}
-
-
 function send(client_id, cmd, payload) {
     var payload = payload || {};
     
@@ -69,8 +64,16 @@ var cmds = {
             waiting.push(connection.id);
             send(connection.id, "ack", {'type' : 'master'})
         } else {
-            waiting.removeid(connection.id); // remove from wait queue
-            send(connection.id, "ack", {'type' : 'slave'})            
+            var opp = waiting.pop();
+            send(connection.id, "ack", {'type' : 'slave'})
+            
+            // remember the pair
+            pairs[connection.id] = opp;
+            pairs[opp] = connection.id;
+            
+            // now tell both that they are initialized
+            send(opp, "initialized");
+            send(connection.id, "initialized");
         }
     }
 }
