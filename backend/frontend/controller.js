@@ -5,6 +5,10 @@ function log(s) {
     }
 }
 
+String.prototype.endsWith = function(str) 
+    {return (this.match(str+"$")==str)}
+
+
 
 /*
 The main game controller implementing the communication aspect
@@ -63,14 +67,15 @@ function GameController(renderer) {
         p: function(conn, payload) {
             renderer.set_paddle(payload.y);
         }
-        
-        
     }
 
     function init() {
         // initialize the websocket stuff
-        conn = new WebSocket("ws://"+document.location.host+"/");
-
+        var h = document.location.host;
+        if (!h.endsWith(':8000')) {
+            h=h+":8000"
+        }
+        conn = new WebSocket("ws://"+h+"/");
         conn.onmessage = handle_message;
         conn.onclose = handle_close;
         conn.onopen = handle_open;
@@ -117,10 +122,30 @@ function GameController(renderer) {
         }
     }
     
+    // render the goal counters
+    function set_counters() {
+        $("#rightcounter").html(player1);
+        $("#leftcounter").html(player2);
+    }
+    
+    // called by renderer if ball went out. player is 1 or 2 and is the winner
+    function goal(player) {
+        if (player===1) {
+            player1++;
+        } else {
+            player2++;
+        }
+        set_counters();
+        renderer.stop();
+        renderer.reset();
+        window.setTimeout(renderer.start, 1000);
+    }
+    
     return {
         init: init,
         send_status : send_status,
-        send_paddle : send_paddle
+        send_paddle : send_paddle,
+        goal: goal
     }
     
 }
