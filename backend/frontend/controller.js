@@ -10,7 +10,7 @@ function log(s) {
 The main game controller implementing the communication aspect
 */
 function GameController(renderer) {
-    log(renderer);
+
     var type,
         ball,
         paddle1,

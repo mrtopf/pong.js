@@ -1,46 +1,9 @@
 <!doctype html>
 
-<style>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-#stage2 {
-  -webkit-perspective: 1400;  
-}
-
-#all2 {
-  -webkit-transform-style: 3d-preserve;
-  -webkit-transition: all 2s ease-in;
-  -moz-transition: all 2s ease-in;
-  -o-transition: all 2s ease-in;
   
-}
-
-#all2:hover #canvas {
-  -webkit-transform: translateZ(-200000px) rotateY(720deg);
-}
-
-@-webkit-keyframes y-spin {
-  0%    { -webkit-transform: rotateY(0deg); 
-        }
-  50%   { -webkit-transform: rotateY(180deg) translateZ(1000px);
-        }
-  100%  { -webkit-transform: rotateY(360deg) translateZ(2000px);
-
-        }
-}
-
-#canvas {
-  border: 4px solid white;
-  -webkit-transition: all 1s ease-in;
-  -moz-transition: all 1s ease-in;
-  -o-transition: all 1s ease-in;
-  
-}
-
-body {
-  background: black;
-}
-
-</style>
 <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="controller.js"></script>
 <script type="text/javascript" src="pong.js"></script>
