@@ -21,13 +21,21 @@ function Paddle(ctx,x,y,use_mouse,controller) {
     var ctx = ctx; 
     var x = x;
     var y = y;
+    var top = $(ctx.canvas).offset().top;
+    var canvas_height = ctx.canvas.height;
 
     if (use_mouse) {
 	    $(document).mousemove(onMouseMove);
     }
 
     function onMouseMove(e) {
-    	y = e.pageY;
+    	y = e.pageY-top;
+    	if (y>(canvas_height-HEIGHT)) {
+    	    y = canvas_height-HEIGHT;
+    	}
+    	if (y<0) {
+    	    y=0;
+    	}
     	controller.send_paddle(y)
     }
 

@@ -109,7 +109,9 @@ function GameController(renderer) {
     
     // send only the paddle information. used by the slave
     function send_paddle(y) {
-        send("p", {y:y})
+        if (type==="slave") {
+            send("p", {y:y})
+        }
     }
     
     return {
