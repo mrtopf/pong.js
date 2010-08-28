@@ -21,7 +21,7 @@ ws_server.addListener("connection", function(connection){
     console.log("connected with client "+connection.id);
     connection.addListener("message", function(msg){
         var e = JSON.parse(msg);
-        console.log(e.c);
+        //console.log("received command: "+e.c);
         cmds[e.c](connection, e);
   });
 });
@@ -47,7 +47,7 @@ function send(client_id, cmd, payload) {
     for (var a in payload) {
         pl[a] = payload[a];
     }
-    console.log("sending "+JSON.stringify(pl))
+    //console.log("sending "+JSON.stringify(pl))
     ws_server.send(client_id, JSON.stringify(pl));
     
 }
@@ -75,5 +75,18 @@ var cmds = {
             send(opp, "initialized");
             send(connection.id, "initialized");
         }
+    },
+    start: function(connection, evt) {
+        var me = connection.id;
+        var you = pairs[me];
+        send(me, "start");
+        send(you, "start");
+    },
+    
+    s: function(connection, evt) {
+        var me = connection.id;
+        var you = pairs[me];
+        send(you, "s", evt);
+        
     }
 }

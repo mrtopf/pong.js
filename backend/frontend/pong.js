@@ -39,11 +39,21 @@ function Paddle(ctx,x,y,use_mouse) {
         y = new_y;
     }
     
+    function get_status() {
+        return {x:x,y:y}
+    }
+    
+    function set_status(py) {
+        y = py;
+    }
+    
     return {
         width : WIDTH,
         height : HEIGHT,
         draw: draw,
-        set_y: set_y
+        set_y: set_y,
+        get_status: get_status,
+        set_status: set_status
     }
 }
 
@@ -76,24 +86,37 @@ function Ball(ctx, x, y) {
     	    dy = -dy;
     	}
     }
+    
+    function get_status() {
+        return {x:x,y:y}
+    }
+    
+    function set_status(bx,by) {
+        x = bx;
+        y = by;
+    }
 
     return {
     	width : WIDTH,
     	height : HEIGHT,
     	move : move,
-    	draw : draw
+    	draw : draw,
+    	get_status: get_status,
+    	set_status: set_status
     }
 }
 
 
 function Pong() {
     
-    var g = GameController(this);
+    var controller;
 
     var canvas_width,
 	    canvas_height,
 	    paddle1,
 	    paddle2,
+	    ball,
+	    type,
 	    ctx;
 
     function clear() {
@@ -113,38 +136,67 @@ function Pong() {
     	// move ball
     	ball.move();
     	draw();
+    	var bs = ball.get_status();
+    	var ps = paddle1.get_status();
+	    controller.send_status(ps.y,bs.x,bs.y);
+    }
+    
+    function set_status(py,bx,by,type) {
+        ball.set_status(bx,by);
+        paddle1.set_status(py);
     }
     
     // start the actual game
     function start() {
+        if (type==="master") {
+            // create render loop
+            intervalId = setInterval(main, 10);
+            return intervalId;            
+        } else {
+            // something to do here?
+        }
+    }
+    
+    /* initialize the renderer with the controller to use
+    */
+    
+    function init(c) {
+        log("set controller "+c)
+        controller = c;
+        
         ctx = $('#canvas')[0].getContext("2d");
         canvas_width = $("#canvas").width();
         canvas_height = $("#canvas").height();
+    }
+    
+    function set_slave () {
+        type = "slave";
+        paddle1 = Paddle(ctx, 20,20);
+        paddle2 = Paddle(ctx, canvas_width-40,80, true);
+        ball = Ball(ctx, 100,120);
+    }
 
+    function set_master () {
+        type = "master";
         paddle1 = Paddle(ctx, 20,20, true);
         paddle2 = Paddle(ctx, canvas_width-40,80);
         ball = Ball(ctx, 100,120);
-
-        // create render loop
-        intervalId = setInterval(main, 10);
-        return intervalId;
-        
-    }
-    
-    function init() {
     }
 
     return {
         init: init,
-        start: start
+        start: start,
+        draw: draw,
+        set_status: set_status,
+        set_slave: set_slave,
+        set_master: set_master
     }
-    
 }
 
 $(document).ready(function() {
     p = Pong();
     g = GameController(p);
-    p.init()
-    g.init()
+    p.init(g);
+    g.init();
 });
 

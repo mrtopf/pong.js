@@ -81,12 +81,45 @@ h1 {
   font-size: 50px;
 }
 
-/* line 24, ../design/src/style.sass */
+/* line 23, ../design/src/style.sass */
+#startbutton_container {
+  display: none;
+  position: absolute;
+  z-index: 3;
+  top: 300px;
+  width: 100%;
+}
+
+/* line 30, ../design/src/style.sass */
+#startbutton {
+  margin: 0 auto;
+  width: 300px;
+  display: block;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -o-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -khtml-border-radius: 20px;
+  border-radius: 20px;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #00aaff), color-stop(100%, #22ccff));
+  background-image: -moz-linear-gradient(top, #00aaff 0%, #22ccff 100%);
+  color: white;
+  -moz-box-shadow: white 0px 0px 10px;
+  -webkit-box-shadow: white 0px 0px 10px;
+  -o-box-shadow: white 0px 0px 10px;
+  box-shadow: white 0px 0px 10px;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 4px 20px;
+  font-size: 50px;
+}
+
+/* line 44, ../design/src/style.sass */
 #all {
   width: 100%;
 }
 
-/* line 27, ../design/src/style.sass */
+/* line 47, ../design/src/style.sass */
 #canvas {
   background: black;
   -moz-box-shadow: rgba(0, 0, 0, 0.7) 3px 3px 3px;

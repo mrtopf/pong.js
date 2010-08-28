@@ -18,12 +18,40 @@ function GameController(renderer) {
         conn;
         
     var CMDS = {
+        
+        // get information if we are master or slave
         ack: function(conn, payload) {
             type = payload.type;
         },
         
+        // two players have been paired, master shows start button
         initialized: function(conn, payload) {
+            //renderer.start();
+            if (type==="master") {
+                $("#startbutton_container").fadeIn(500);
+                $("#startbutton").click(function() {
+                    $("#startbutton_container").fadeOut(500);
+                    send("start");
+                })
+            }
+        },
+        
+        // the master pressed start, we start rendering
+        start: function() {
+            if (type==="master") {
+                renderer.set_master();
+            } else {
+                renderer.set_slave();
+            }
             renderer.start();
+        },
+        s: function(conn, payload) {
+            renderer.set_status(
+                    payload.s[0],
+                    payload.s[1],
+                    payload.s[2],
+                    type);
+            renderer.draw();
         }
     }
 
@@ -46,7 +74,7 @@ function GameController(renderer) {
         for (var a in payload) {
              pl[a] = payload[a];
         }
-        log("sending "+JSON.stringify(pl))
+        //log("sending "+JSON.stringify(pl))
         conn.send(JSON.stringify(pl));
     }
     
@@ -57,7 +85,7 @@ function GameController(renderer) {
     
     function handle_message(evt) {
         var data = JSON.parse(evt.data);
-        log("received msg "+evt.data);
+        //log("received msg "+evt.data);
         var cmd = data.c;
         CMDS[cmd](conn, data);
     }
@@ -65,9 +93,13 @@ function GameController(renderer) {
     function handle_close () {
         // body...
     }
-        
+    
+    function send_status(py,bx,by) {
+        send("s",{s: [py,bx,by] })
+    }
     return {
-        init: init
+        init: init,
+        send_status : send_status
     }
     
 }
