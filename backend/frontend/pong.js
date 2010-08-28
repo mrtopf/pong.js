@@ -56,13 +56,24 @@ function Paddle(ctx,x,y,use_mouse,controller) {
         y = py;
     }
     
+    // return the outline for collision detection
+    function get_outline() {
+        return {
+            x: x,
+            y: y,
+            h: HEIGHT,
+            w: WIDTH
+        }
+    }
+    
     return {
         width : WIDTH,
         height : HEIGHT,
         draw: draw,
         set_y: set_y,
         get_status: get_status,
-        set_status: set_status
+        set_status: set_status,
+        get_outline: get_outline
     }
 }
 
@@ -104,6 +115,25 @@ function Ball(ctx, x, y) {
         x = bx;
         y = by;
     }
+    
+    // collision detection
+    function coll_dtx(paddle, check_left) {
+        var outline = paddle.get_outline();
+        if (check_left) {
+            if ((x==(outline.x+outline.w))
+                && (y>outline.y)
+                && (y<(outline.y+outline.h))) {
+                dx = -dx;
+            }            
+        } else {
+            if ((x+WIDTH)==outline.x
+                && (y>outline.y) 
+                && (y<(outline.y+outline.h))) {
+                    console.log("right");
+                dx = -dx;
+            }            
+        }
+    }
 
     return {
     	width : WIDTH,
@@ -111,7 +141,8 @@ function Ball(ctx, x, y) {
     	move : move,
     	draw : draw,
     	get_status: get_status,
-    	set_status: set_status
+    	set_status: set_status,
+    	coll_dtx: coll_dtx
     }
 }
 
@@ -139,6 +170,9 @@ function Pong() {
     	paddle1.draw();
     	paddle2.draw();
     	ball.draw();
+    	ball.coll_dtx(paddle1,true);
+    	ball.coll_dtx(paddle2);
+
     };
 
     function main() {
@@ -154,7 +188,7 @@ function Pong() {
         ball.set_status(bx,by);
         paddle1.set_status(py);
     }
-    
+        
     // start the actual game
     function start() {
         if (type==="master") {
